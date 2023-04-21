@@ -1,0 +1,20 @@
+.nav-link {
+    color: #f56640;
+    font-size: 0.9em;
+}
+
+.wpr-e2e-container h6 {
+    font-size: 0.9em;
+}
+
+.wpr-e2e-container .card-subtitle-box {
+    min-height:85px;
+}
+
+.wpr-e2e-container .font-sm {
+    font-size: 0.8em;
+}
+
+.wpr-e2e-container .btn {
+    font-size: 0.9em;
+}

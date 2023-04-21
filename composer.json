@@ -1,0 +1,21 @@
+{
+    "name": "wp-media/wp-rocket-e2e-test-helper",
+    "description": "WP-Rocket E2E test helper plugin",
+    "type": "project",
+    "license": "GPL-2.0-or-later",
+    "authors": [
+        {
+            "name": "WP Media",
+            "email": "contact@wp-media.me"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "WP_Rocket_e2e\\": "src/",
+            "WP_Rocket_e2e\\App\\": "app/"
+        }
+    },
+    "require": {
+        "league/container": "^4.2"
+    }
+}
