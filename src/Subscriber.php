@@ -2,7 +2,7 @@
 
 namespace WP_Rocket_e2e;
 
-trait Subscriber{
+class Subscriber{
 
     /**
      * Array of service alias.
