@@ -25,7 +25,7 @@ class ComposerStaticInitc4d175bb2b1fefaddc9d816a1d6f6afb
     public static $prefixDirsPsr4 = array (
         'WP_Rocket_e2e\\App\\' => 
         array (
-            0 => __DIR__ . '/../..' . '/app',
+            0 => __DIR__ . '/../..' . '/App',
         ),
         'WP_Rocket_e2e\\' => 
         array (
@@ -82,13 +82,22 @@ class ComposerStaticInitc4d175bb2b1fefaddc9d816a1d6f6afb
         'Psr\\Container\\ContainerExceptionInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerExceptionInterface.php',
         'Psr\\Container\\ContainerInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerInterface.php',
         'Psr\\Container\\NotFoundExceptionInterface' => __DIR__ . '/..' . '/psr/container/src/NotFoundExceptionInterface.php',
-        'WP_Rocket_e2e\\App\\Assets\\Assets' => __DIR__ . '/../..' . '/app/Assets/Assets.php',
-        'WP_Rocket_e2e\\App\\Assets\\ServiceProvider' => __DIR__ . '/../..' . '/app/Assets/ServiceProvider.php',
-        'WP_Rocket_e2e\\App\\Assets\\Subscriber' => __DIR__ . '/../..' . '/app/Assets/Subscriber.php',
+        'WP_Rocket_e2e\\App\\Activation_Deactivation' => __DIR__ . '/../..' . '/App/Activation_Deactivation.php',
+        'WP_Rocket_e2e\\App\\Admin\\Notices' => __DIR__ . '/../..' . '/App/Admin/Notices.php',
+        'WP_Rocket_e2e\\App\\Admin\\Pages' => __DIR__ . '/../..' . '/App/Admin/Pages.php',
+        'WP_Rocket_e2e\\App\\Admin\\Subscriber' => __DIR__ . '/../..' . '/App/Admin/Subscriber.php',
+        'WP_Rocket_e2e\\App\\Admin\\Template' => __DIR__ . '/../..' . '/App/Admin/Template.php',
+        'WP_Rocket_e2e\\App\\Assets\\Assets' => __DIR__ . '/../..' . '/App/Assets/Assets.php',
+        'WP_Rocket_e2e\\App\\Assets\\Subscriber' => __DIR__ . '/../..' . '/App/Assets/Subscriber.php',
+        'WP_Rocket_e2e\\App\\Modules\\Cache\\Cache' => __DIR__ . '/../..' . '/App/Modules/Cache/Cache.php',
+        'WP_Rocket_e2e\\App\\Modules\\Cache\\Subscriber' => __DIR__ . '/../..' . '/App/Modules/Cache/Subscriber.php',
+        'WP_Rocket_e2e\\App\\Modules\\ServiceProvider' => __DIR__ . '/../..' . '/App/Modules/ServiceProvider.php',
+        'WP_Rocket_e2e\\App\\ServiceProvider' => __DIR__ . '/../..' . '/App/ServiceProvider.php',
         'WP_Rocket_e2e\\Events\\Event_Manager' => __DIR__ . '/../..' . '/src/Events/Event_Manager.php',
         'WP_Rocket_e2e\\Events\\Event_Manager_Aware_Subscriber_Interface' => __DIR__ . '/../..' . '/src/Events/Event_Manager_Aware_Subscriber_Interface.php',
         'WP_Rocket_e2e\\Events\\Subscriber_Interface' => __DIR__ . '/../..' . '/src/Events/Subscriber_Interface.php',
         'WP_Rocket_e2e\\Plugin' => __DIR__ . '/../..' . '/src/Plugin.php',
+        'WP_Rocket_e2e\\Subscriber' => __DIR__ . '/../..' . '/src/Subscriber.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
