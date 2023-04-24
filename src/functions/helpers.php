@@ -15,19 +15,6 @@ function __get_option( string $option ) {
     return $options[ $option ] ?? false;
 }
 
-if ( ! function_exists( 'rocket_direct_filesystem' ) ) {
-    /**
-     * Instanciate the filesystem class
-     *
-     * @return WP_Filesystem_Direct WP_Filesystem_Direct instance
-     */
-    function rocket_direct_filesystem() {
-        require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
-        require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
-        return new WP_Filesystem_Direct( new StdClass() );
-    }
-}
-
 /**
  * Check if WP Rocket is active.
  *
