@@ -25,7 +25,7 @@ class Notices {
 
         $content = $file_system->get_contents( WP_CONTENT_DIR . '/debug.log' );
 
-        if ( ! preg_match( '#plugins/wp-rocket#', $content ) ) {
+        if ( ! preg_match( '#/plugins/wp-rocket/#', $content ) ) {
             return;
         }
 
