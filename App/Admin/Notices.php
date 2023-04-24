@@ -30,7 +30,7 @@ class Notices {
         }
 
         $data = [
-            'id' => 'debug_log_notice',
+            'id' => 'wpr_debug_log_notice',
             'status' => 'error',
             'message' => 'WP Rocket has some related warnings/errors in debug.log',
         ];
