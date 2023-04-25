@@ -17,7 +17,7 @@ class Notices {
             return;
         }
 
-        $file_system = rocket_direct_filesystem();
+        $file_system = rocket_e2e_direct_filesystem();
 
         if ( ! $file_system->exists( WP_CONTENT_DIR . '/debug.log' ) ) {
             return;
