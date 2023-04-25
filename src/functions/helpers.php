@@ -15,6 +15,12 @@ function __get_option( string $option ) {
     return $options[ $option ] ?? false;
 }
 
+function rocket_e2e_direct_filesystem() {
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-base.php';
+    require_once ABSPATH . 'wp-admin/includes/class-wp-filesystem-direct.php';
+    return new WP_Filesystem_Direct( new StdClass() );
+}
+
 /**
  * Check if WP Rocket is active.
  *
