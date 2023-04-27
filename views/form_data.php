@@ -29,5 +29,5 @@ return [
         ],
 
         'nonce' => wp_create_nonce( CONFIG['PLUGIN_ID'] . '_filters_form_nonce' ),
-    ]
+    ],
 ];
