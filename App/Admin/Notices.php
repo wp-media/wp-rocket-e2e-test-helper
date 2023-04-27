@@ -7,6 +7,12 @@ namespace WP_Rocket_e2e\App\Admin;
  */
 class Notices {
 
+    private $debug_log_patterns = [
+        '/plugins/wp-rocket/',
+        'wpr_rucss_used_css',
+        'wpr_rocket_cache',
+    ];
+
     /**
      * Trigger notice if error in debug.log is related to wp-rocket.
      *
@@ -25,7 +31,8 @@ class Notices {
 
         $content = $file_system->get_contents( WP_CONTENT_DIR . '/debug.log' );
 
-        if ( ! preg_match( '#/plugins/wp-rocket/#', $content ) ) {
+        $patterns = implode( '|', $this->debug_log_patterns );
+        if ( ! preg_match( '#' . $patterns . '#', $content ) ) {
             return;
         }
 
