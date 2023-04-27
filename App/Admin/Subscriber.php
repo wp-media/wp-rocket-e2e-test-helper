@@ -51,11 +51,14 @@ class Subscriber implements Subscriber_Interface {
 	public static function get_subscribed_events() : array {
 		return [
 			'admin_menu' => 'admin_menu',
-            'admin_notices' => 'debug_log_notice',
+            'admin_notices' => [
+                [ 'debug_log_notice' ]
+            ],
             'admin_post_' . self::$plugin_id . '_filters_form' => 'save_filter_returns',
             'admin_init' => [
                 [ 'trap_response' ],
                 [ 'set_response' ],
+                [ 'save_small_settings' ],
             ],
 		];
 	}
@@ -108,6 +111,42 @@ class Subscriber implements Subscriber_Interface {
 
             wp_redirect( esc_url_raw( add_query_arg( $arg, admin_url( 'tools.php?page='. self::$plugin_id ) ) ) );
             exit;
+        }
+    }
+
+    /**
+     * Save settings for visuals playwright interacts with.
+     *
+     * @return void
+     */
+    public function save_small_settings() : void {
+        if ( ! isset( $_GET['wpr_e2e_action'] ) && ! isset( $_GET[ 'wp_nonce' ] ) ) {
+            return;
+        }
+
+        switch ( $_GET['wpr_e2e_action'] ) {
+            case 'save_last_major_version':
+
+                if ( ! is_wpr_active() ) {
+                    return;
+                }
+
+                if ( ! wp_verify_nonce( $_GET[ 'wp_nonce' ], self::$plugin_id . '_general' ) ) {
+                    return;
+                }
+
+                $wpr_e2e_config = get_option( 'wpr_e2e_config' );
+                $wpr_e2e_config['rocket_last_major_version'] = WP_ROCKET_LASTVERSION;
+                
+                update_option( 'wpr_e2e_config', $wpr_e2e_config );
+
+                $arg = [
+                    self::$plugin_id . '_response' => 'success',
+                ];
+    
+                wp_redirect( esc_url_raw( add_query_arg( $arg, admin_url( 'tools.php?page='. self::$plugin_id ) ) ) );
+                exit;
+                break;
         }
     }
 
