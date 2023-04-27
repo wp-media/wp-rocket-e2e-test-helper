@@ -47,6 +47,7 @@ class Pages {
      */
     public function render_views() : void {
         $this->cache_view();
+        $this->tools_view();
 
         // Load modules to view.
         $this->views = $this->template->modules;
@@ -92,6 +93,20 @@ class Pages {
                 'type' => $is_common_cache_enabled ? 'success' : 'warning',
             ],
             $this->cache->is_common_cache_dir_used_for_users()
+        );
+    }
+
+    private function tools_view() : void {
+
+        $this->template->add_test_case(
+            'tools',
+            'wpr_last_major_version_equals_current',
+            'WP Rocket last major version should be equal to the current version',
+            [
+                'text' => 'Last saved major version is the same as the current',
+                'type' => 'info',
+            ],
+            is_wpr_active() ? __get_option( 'rocket_last_major_version' ) === WP_ROCKET_VERSION : false
         );
     }
 }

@@ -58,6 +58,11 @@ class Template {
             'id' => 'addons',
             'pane' => 'addons_pane',
         ],
+        'tools' => [
+            'name' => 'Tools',
+            'id' => 'tools',
+            'pane' => 'tools',
+        ],
         'filters' => [
             'name' => 'Filters',
             'id' => 'filters',
@@ -84,6 +89,8 @@ class Template {
         }
 
         $this->form_data = require CONFIG[ 'PLUGIN_PATH' ] . 'views/form_data.php';
+        $plugin_id = CONFIG['PLUGIN_ID'];
+        $wp_nonce = wp_create_nonce( $plugin_id . '_general' );
 
         require_once CONFIG[ 'PLUGIN_PATH' ] . 'views/modules/' . $id . '.php';
     }
