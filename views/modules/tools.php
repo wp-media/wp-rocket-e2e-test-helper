@@ -5,7 +5,7 @@ defined( 'ABSPATH' ) || exit;
 <h5>Tools</h5>
 <div class="row">
     <div class="col-md-3">
-        <a href="<?php echo admin_url( 'tools.php?page='. $plugin_id . '&wpr_e2e_action=save_last_major_version&wp_nonce=' . $wp_nonce ) ?>" class="btn btn-primary">Save last major version</a>
+        <a href="<?php echo admin_url( 'tools.php?page='. $plugin_id . '&wpr_e2e_action=save_last_major_version&wp_nonce=' . $wp_nonce ) ?>" class="btn btn-primary" id="save_last_major_version">Save last major version</a>
     </div>
 </div>
 
