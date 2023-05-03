@@ -7,7 +7,7 @@ require_once 'templates/header.php';
 if ( ! is_wpr_active() ) :
 ?>
     <div class="container-fluid">
-        <div class="alert alert-warning py-2">
+        <div class="alert alert-warning py-2" id="wpr_active_status">
         <small><strong>WP Rocket is currently not active. The E2E test helper plugin might not work correctly.</strong></small>
         </div>
     </div>
