@@ -16,7 +16,7 @@ return [
                 'int' => '15',
                 'invalid_array' => '["yy",0,True]',
             ],
-            'state' => __get_option( 'rocket_post_purge_urls' ) ?? '',
+            'state' => rocket_e2e_get_option( 'rocket_post_purge_urls' ) ?? '',
         ],
         'rocket_exclude_post_taxonomy' => [
             'form_data' => [
@@ -25,7 +25,7 @@ return [
                 'post_tag' => 'post_tag',
                 'product_cat' => 'product_cat',
             ],
-            'state' => __get_option( 'rocket_exclude_post_taxonomy' ) ?? '',
+            'state' => rocket_e2e_get_option( 'rocket_exclude_post_taxonomy' ) ?? '',
         ],
 
         'nonce' => wp_create_nonce( CONFIG['PLUGIN_ID'] . '_filters_form_nonce' ),

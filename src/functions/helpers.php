@@ -6,7 +6,7 @@
  * @param string $option Single option name.
  * @return void
  */
-function __get_option( string $option ) {
+function rocket_e2e_get_option( string $option ) {
     if ( ! get_option( CONFIG['PLUGIN_OPTION'] ) ) {
         return false;
     }

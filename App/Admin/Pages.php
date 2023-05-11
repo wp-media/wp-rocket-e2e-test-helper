@@ -106,7 +106,7 @@ class Pages {
                 'text' => 'Last saved major version is the same as the current',
                 'type' => 'info',
             ],
-            is_wpr_active() ? __get_option( 'rocket_last_major_version' ) === WP_ROCKET_VERSION : false
+            is_wpr_active() ? rocket_e2e_get_option( 'rocket_last_major_version' ) === WP_ROCKET_VERSION : false
         );
     }
 }
