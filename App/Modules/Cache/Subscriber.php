@@ -28,11 +28,11 @@ class Subscriber implements Subscriber_Interface {
      * @return array
      */
     public function purge_urls( array $purge_urls ) : array {
-        if ( ! __get_option( 'rocket_post_purge_urls' ) ) {
+        if ( ! rocket_e2e_get_option( 'rocket_post_purge_urls' ) ) {
             return $purge_urls;
         }
 
-        $rocket_post_purge_urls = __get_option( 'rocket_post_purge_urls' );
+        $rocket_post_purge_urls = rocket_e2e_get_option( 'rocket_post_purge_urls' );
 
         switch ( $rocket_post_purge_urls ) {
             case 'false_return':
@@ -72,11 +72,11 @@ class Subscriber implements Subscriber_Interface {
      * @return array
      */
     public function exclude_post_taxonomy( array $taxonomies ) : array {
-        if ( ! __get_option( 'rocket_exclude_post_taxonomy' ) ) {
+        if ( ! rocket_e2e_get_option( 'rocket_exclude_post_taxonomy' ) ) {
             return $taxonomies;
         }
 
-        $rocket_exclude_post_taxonomy = __get_option( 'rocket_exclude_post_taxonomy' );
+        $rocket_exclude_post_taxonomy = rocket_e2e_get_option( 'rocket_exclude_post_taxonomy' );
 
         if ( 'default' === $rocket_exclude_post_taxonomy ) {
             return $taxonomies;

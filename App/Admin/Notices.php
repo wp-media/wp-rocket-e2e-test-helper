@@ -7,6 +7,12 @@ namespace WP_Rocket_e2e\App\Admin;
  */
 class Notices {
 
+    private $debug_log_patterns = [
+        '/plugins/wp-rocket/',
+        'wpr_rucss_used_css',
+        'wpr_rocket_cache',
+    ];
+
     /**
      * Trigger notice if error in debug.log is related to wp-rocket.
      *
@@ -17,7 +23,7 @@ class Notices {
             return;
         }
 
-        $file_system = rocket_direct_filesystem();
+        $file_system = rocket_e2e_direct_filesystem();
 
         if ( ! $file_system->exists( WP_CONTENT_DIR . '/debug.log' ) ) {
             return;
@@ -25,12 +31,13 @@ class Notices {
 
         $content = $file_system->get_contents( WP_CONTENT_DIR . '/debug.log' );
 
-        if ( ! preg_match( '#plugins/wp-rocket#', $content ) ) {
+        $patterns = implode( '|', $this->debug_log_patterns );
+        if ( ! preg_match( '#' . $patterns . '#', $content ) ) {
             return;
         }
 
         $data = [
-            'id' => 'debug_log_notice',
+            'id' => 'wpr_debug_log_notice',
             'status' => 'error',
             'message' => 'WP Rocket has some related warnings/errors in debug.log',
         ];

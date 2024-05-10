@@ -6,7 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WP_Rocket_e2e\\App\\' => array($baseDir . '/app'),
+    'WP_Rocket_e2e\\App\\' => array($baseDir . '/App'),
     'WP_Rocket_e2e\\' => array($baseDir . '/src'),
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),

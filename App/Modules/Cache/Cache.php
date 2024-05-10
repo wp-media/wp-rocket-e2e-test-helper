@@ -21,6 +21,10 @@ class Cache {
      * @return boolean
      */
     public function is_cache_generated( $user_cache = false ) : bool {
+        if ( ! is_wpr_active() ) {
+            return false;
+        }
+
         if ( $user_cache && ! $this->cache_logged_user() ) {
             return false;
         }
@@ -33,7 +37,7 @@ class Cache {
         $paths = apply_filters( 'rocket_e2e_cache_test_paths', $this->cache_test_paths );
 
         foreach ( $paths as $path ) {
-            if ( ! rocket_direct_filesystem()->exists( $this->get_cache_root_dir( $user_cache ) . '/' . $path ) ) {
+            if ( ! rocket_e2e_direct_filesystem()->exists( $this->get_cache_root_dir( $user_cache ) . '/' . $path ) ) {
                 return false;
             }
         }
@@ -48,11 +52,15 @@ class Cache {
      * @return boolean
      */
     public function is_common_cache_dir_used_for_users() : bool {
+        if ( ! is_wpr_active() ) {
+            return false;
+        }
+
         if ( ! $this->is_common_cache_enabled() ) {
             return false;
         }
 
-        $file_system = rocket_direct_filesystem();
+        $file_system = rocket_e2e_direct_filesystem();
 
         if ( ! $file_system->exists( $this->get_cache_root_dir( true, true ) . '/index.html' ) ) {
             return false;
@@ -94,6 +102,10 @@ class Cache {
      * @return boolean
      */
     public function cache_logged_user() : bool {
+        if ( ! is_wpr_active() ) {
+            return false;
+        }
+
         return (bool) get_rocket_option( 'cache_logged_user', 0 );
     }
 
@@ -103,6 +115,10 @@ class Cache {
      * @return boolean
      */
     public function is_common_cache_enabled() : bool {
+        if ( ! is_wpr_active() ) {
+            return false;
+        }
+
         // Get rocket config buffer.
         $config_buffer = get_rocket_config_file()[1];
         if ( ! preg_match( '/\$rocket_common_cache_logged_users\s*=\s*(?<value>[0-9])/', $config_buffer, $value ) ) {

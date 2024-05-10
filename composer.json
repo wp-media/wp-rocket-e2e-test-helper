@@ -12,7 +12,7 @@
     "autoload": {
         "psr-4": {
             "WP_Rocket_e2e\\": "src/",
-            "WP_Rocket_e2e\\App\\": "app/"
+            "WP_Rocket_e2e\\App\\": "App/"
         }
     },
     "require": {
