@@ -74,6 +74,12 @@ class Notices {
          * @param array $exclusion_patterns Array of WP Rocket related error patterns to exclude.
          */
         $exclusion_patterns = apply_filters( 'rocket_e2e_error_exclusions', $this->debug_log_exclusion_patterns );
+
+        // Validate filter return.
+        if ( ! is_array( $exclusion_patterns ) || empty( $exclusion_patterns ) ) {
+            $exclusion_patterns =  $this->debug_log_exclusion_patterns;
+        }
+
         $exclusion_patterns = implode( '|', $exclusion_patterns );
 
         // Check if errors should be excluded from notice.
