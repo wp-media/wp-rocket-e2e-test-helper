@@ -7,10 +7,26 @@ namespace WP_Rocket_e2e\App\Admin;
  */
 class Notices {
 
+    /**
+     * Array of patterns to match WP Rocket related errors in debug.log.
+     *
+     * @var array
+     */
     private $debug_log_patterns = [
         '/plugins/wp-rocket/',
-        'wpr_rucss_used_css',
-        'wpr_rocket_cache',
+        'WP_Rocket',
+    ];
+
+    /**
+     * Array of WP Rocket related error patterns to exclude.
+     *
+     * @var array
+     */
+    private $debug_log_exclusion_patterns = [
+        'wp-rocket/inc/Dependencies/Database',
+        'WP_Rocket(.*)Table->create',
+        'wp-rocket/inc/Engine/Common/Database/Queries/AbstractQuery',
+        'Failed opening(.*?)wp-rocket/',
     ];
 
     /**
@@ -19,6 +35,8 @@ class Notices {
      * @return void
      */
     public function debug_log_notice() : void {
+        $display_error_notice = true;
+
         if ( ! defined( 'WP_DEBUG' ) || ! defined( 'WP_DEBUG_LOG' ) || false === WP_DEBUG || false === WP_DEBUG_LOG ) {
             return;
         }
@@ -30,9 +48,46 @@ class Notices {
         }
 
         $content = $file_system->get_contents( WP_CONTENT_DIR . '/debug.log' );
+        preg_match_all( '#^\[(?<timestamp>.*?)\] (?<error>.+?)(?=\n\[|\z)#ms', $content, $matches, PREG_SET_ORDER);
 
+        // Flag errors related to WP Rocket in log.
+        $wpr_related_errors = [];
         $patterns = implode( '|', $this->debug_log_patterns );
-        if ( ! preg_match( '#' . $patterns . '#', $content ) ) {
+
+        foreach( $matches as $match ) {
+            if ( ! preg_match( '#' . $patterns . '#', $match['error'] ) ) {
+                continue;
+            }
+
+            // Store errors.
+            $wpr_related_errors[] = $match['error'];
+        }
+
+        // Bail if no WP Rocket related error.
+        if ( empty( $wpr_related_errors ) ) {
+            return;
+        }
+       
+        /**
+         * Filters WP Rocket related errors to be excluded.
+         * 
+         * @param array $exclusion_patterns Array of WP Rocket related error patterns to exclude.
+         */
+        $exclusion_patterns = apply_filters( 'rocket_e2e_error_exclusions', $this->debug_log_exclusion_patterns );
+        $exclusion_patterns = implode( '|', $exclusion_patterns );
+
+        // Check if errors should be excluded from notice.
+        foreach( $wpr_related_errors as $errors ) {
+            if ( preg_match( '#' . $exclusion_patterns . '#', $errors ) ) {
+                $display_error_notice = false;
+
+                continue;
+            }
+
+            $display_error_notice = true;
+        }
+
+        if ( ! $display_error_notice ) {
             return;
         }
 
