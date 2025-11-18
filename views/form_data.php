@@ -27,6 +27,13 @@ return [
             ],
             'state' => rocket_e2e_get_option( 'rocket_exclude_post_taxonomy' ) ?? '',
         ],
+        'rocket_rocket_insights_enabled' => [
+            'form_data' => [
+                'false_return' => 'false',
+                'true_return' => 'true',
+            ],
+            'state' => rocket_e2e_get_option( 'rocket_rocket_insights_enabled' ) ?? '',
+        ],
 
         'nonce' => wp_create_nonce( CONFIG['PLUGIN_ID'] . '_filters_form_nonce' ),
     ],
