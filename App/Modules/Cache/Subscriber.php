@@ -18,6 +18,7 @@ class Subscriber implements Subscriber_Interface {
 		return [
             'rocket_post_purge_urls' => 'purge_urls',
             'rocket_exclude_post_taxonomy' => [ 'exclude_post_taxonomy', 12 ],
+            'rocket_rocket_insights_enabled' => 'rocket_insights_enabled',
         ];
 	}
 
@@ -85,5 +86,29 @@ class Subscriber implements Subscriber_Interface {
         $taxonomies[] = $rocket_exclude_post_taxonomy;
 
         return $taxonomies;
+    }
+
+    /**
+     * Enable/disable Rocket Insights.
+     *
+     * @param bool $enabled Whether Rocket Insights is enabled.
+     * @return bool
+     */
+    public function rocket_insights_enabled( bool $enabled ) : bool {
+        if ( ! rocket_e2e_get_option( 'rocket_rocket_insights_enabled' ) ) {
+            return $enabled;
+        }
+
+        $rocket_rocket_insights_enabled = rocket_e2e_get_option( 'rocket_rocket_insights_enabled' );
+
+        if ( 'true_return' === $rocket_rocket_insights_enabled ) {
+            return true;
+        }
+
+        if ( 'false_return' === $rocket_rocket_insights_enabled ) {
+            return false;
+        }
+
+        return $enabled;
     }
 }
