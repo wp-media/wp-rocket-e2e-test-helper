@@ -60,7 +60,7 @@
             <div class="mb-3 w-50">
                 <label for="rocket_rocket_insights_enabled" class="form-label"><code>rocket_rocket_insights_enabled</code> filter to return:</label>
                 <select class="form-select" name="rocket_rocket_insights_enabled" id="rocket_rocket_insights_enabled" aria-label="rocket_rocket_insights_enabled filter value">
-                    <option selected value="">Select a value to return</option>
+                    <option value="" <?php echo '' === $this->form_data['filters']['rocket_rocket_insights_enabled']['state'] ? 'selected="selected"' : '' ?>>Select a value to return</option>
                     <?php foreach ( $this->form_data['filters']['rocket_rocket_insights_enabled']['form_data'] as $key => $value ) : ?>
                         <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['rocket_rocket_insights_enabled']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
                     <?php endforeach; ?>
