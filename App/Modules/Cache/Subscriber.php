@@ -89,7 +89,7 @@ class Subscriber implements Subscriber_Interface {
     }
 
     /**
-     * Enable/disable Rocket Insights.
+     * Enable or disable Rocket Insights.
      *
      * @param bool $enabled Whether Rocket Insights is enabled.
      * @return bool
@@ -101,14 +101,13 @@ class Subscriber implements Subscriber_Interface {
 
         $rocket_rocket_insights_enabled = rocket_e2e_get_option( 'rocket_rocket_insights_enabled' );
 
-        if ( 'true_return' === $rocket_rocket_insights_enabled ) {
-            return true;
+        switch ( $rocket_rocket_insights_enabled ) {
+            case 'false_return':
+                return false;
+            case 'true_return':
+                return true;
+            default:
+                return $enabled;
         }
-
-        if ( 'false_return' === $rocket_rocket_insights_enabled ) {
-            return false;
-        }
-
-        return $enabled;
     }
 }
