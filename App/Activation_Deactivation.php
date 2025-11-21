@@ -15,7 +15,7 @@ class Activation_Deactivation {
         $config = [
             'rocket_post_purge_urls' => 'default',
             'rocket_exclude_post_taxonomy' => 'default',
-            'rocket_rocket_insights_enabled' => '',
+            'rocket_rocket_insights_enabled' => 'false_return',
         ];
 
         add_option( CONFIG['PLUGIN_OPTION'], $config );
