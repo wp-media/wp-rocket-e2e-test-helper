@@ -99,11 +99,13 @@ class Subscriber implements Subscriber_Interface {
             $rocket_post_purge_urls = sanitize_text_field( $_POST['rocket_post_purge_urls'] );
             $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] );
             $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] );
+            $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] );
 
             $wpr_e2e_config = get_option( 'wpr_e2e_config' );
             $wpr_e2e_config['rocket_post_purge_urls'] = $rocket_post_purge_urls;
             $wpr_e2e_config['rocket_exclude_post_taxonomy'] = $rocket_exclude_post_taxonomy;
             $wpr_e2e_config['rocket_rocket_insights_enabled'] = $rocket_rocket_insights_enabled;
+            $wpr_e2e_config['transient_wp_rocket_pricing'] = $transient_wp_rocket_pricing;
             
             update_option( 'wpr_e2e_config', $wpr_e2e_config );
 

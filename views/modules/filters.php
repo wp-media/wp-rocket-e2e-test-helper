@@ -67,6 +67,35 @@
                 </select>
             </div>
 
+            <h5>Active Promo Simulation</h5>
+            <div class="block">
+                <pre>
+                    <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
+                    add_filter( 'transient_wp_rocket_pricing', function ( $value ) {
+                        if ( empty( $value ) ) {
+                            return $value;
+                        }
+                        $value->promo = (object) [
+                            'name'             => 'Test Summer Sale',
+                            'discount_percent' => 30,
+                            'start_date'       => strtotime( '-1 day' ),
+                            'end_date'         => strtotime( '+5 days' ),
+                        ];
+                        return $value;
+                    } );
+                    </code>
+                </pre>
+            </div>
+
+            <div class="mb-3 w-50">
+                <label for="transient_wp_rocket_pricing" class="form-label">Apply <code>transient_wp_rocket_pricing</code> promo override:</label>
+                <select class="form-select" name="transient_wp_rocket_pricing" id="transient_wp_rocket_pricing" aria-label="transient_wp_rocket_pricing filter state">
+                    <?php foreach ( $this->form_data['filters']['transient_wp_rocket_pricing']['form_data'] as $key => $value ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['transient_wp_rocket_pricing']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </div>
+
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary">Save</button>
             </div>

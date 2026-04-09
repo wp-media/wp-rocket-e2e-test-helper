@@ -34,6 +34,13 @@ return [
             ],
             'state' => rocket_e2e_get_option( 'rocket_rocket_insights_enabled' ) ?? 'false_return',
         ],
+        'transient_wp_rocket_pricing' => [
+            'form_data' => [
+                'disabled' => 'disabled',
+                'enabled' => 'enabled',
+            ],
+            'state' => rocket_e2e_get_option( 'transient_wp_rocket_pricing' ) ?? 'disabled',
+        ],
 
         'nonce' => wp_create_nonce( CONFIG['PLUGIN_ID'] . '_filters_form_nonce' ),
     ],

@@ -16,6 +16,7 @@ class Activation_Deactivation {
             'rocket_post_purge_urls' => 'default',
             'rocket_exclude_post_taxonomy' => 'default',
             'rocket_rocket_insights_enabled' => 'false_return',
+            'transient_wp_rocket_pricing' => 'disabled',
         ];
 
         $existing_config = get_option( CONFIG['PLUGIN_OPTION'], [] );

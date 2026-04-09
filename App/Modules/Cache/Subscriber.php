@@ -9,18 +9,19 @@ use WP_Rocket_e2e\Events\Subscriber_Interface;
  */
 class Subscriber implements Subscriber_Interface {
 
-	/**
-	 * Returns array of events this listen to.
-	 *
-	 * @return array
-	 */
-	public static function get_subscribed_events() : array {
-		return [
+    /**
+     * Returns array of events this listen to.
+     *
+     * @return array
+     */
+    public static function get_subscribed_events() : array {
+        return [
             'rocket_post_purge_urls' => 'purge_urls',
             'rocket_exclude_post_taxonomy' => [ 'exclude_post_taxonomy', 12 ],
             'rocket_rocket_insights_enabled' => 'rocket_insights_enabled',
+            'transient_wp_rocket_pricing' => 'transient_wp_rocket_pricing',
         ];
-	}
+    }
 
     /**
      * Purge urls.
@@ -55,7 +56,7 @@ class Subscriber implements Subscriber_Interface {
                 $purge_urls[] = 15;
                 break;
             case 'invalid_array':
-                $purge_urls = ['yy',0,True];
+                $purge_urls = [ 'yy', 0, true ];
                 break;
             case 'default':
                 return $purge_urls;
@@ -82,7 +83,7 @@ class Subscriber implements Subscriber_Interface {
         if ( 'default' === $rocket_exclude_post_taxonomy ) {
             return $taxonomies;
         }
-        
+
         $taxonomies[] = $rocket_exclude_post_taxonomy;
 
         return $taxonomies;
@@ -109,5 +110,32 @@ class Subscriber implements Subscriber_Interface {
             default:
                 return $enabled;
         }
+    }
+
+    /**
+     * Simulate active pricing promo in transient.
+     *
+     * @param mixed $value Transient value.
+     * @return mixed
+     */
+    public function transient_wp_rocket_pricing( $value ) {
+        $state = rocket_e2e_get_option( 'transient_wp_rocket_pricing' );
+
+        if ( 'enabled' !== $state ) {
+            return $value;
+        }
+
+        if ( empty( $value ) ) {
+            return $value;
+        }
+
+        $value->promo = (object) [
+            'name'             => 'Test Summer Sale',
+            'discount_percent' => 30,
+            'start_date'       => strtotime( '-1 day' ),
+            'end_date'         => strtotime( '+5 days' ),
+        ];
+
+        return $value;
     }
 }
