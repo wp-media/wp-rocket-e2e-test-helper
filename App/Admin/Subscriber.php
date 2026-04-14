@@ -96,18 +96,32 @@ class Subscriber implements Subscriber_Interface {
         $nonce_field = self::$plugin_id . '_filters_form_nonce';
 
         if( isset( $_POST[ $nonce_field ] ) && wp_verify_nonce( $_POST[ $nonce_field ], $nonce_field ) ) {
-            $rocket_post_purge_urls = sanitize_text_field( $_POST['rocket_post_purge_urls'] );
-            $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] );
-            $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] );
-            $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] );
+            $rocket_post_purge_urls = sanitize_text_field( $_POST['rocket_post_purge_urls'] ?? 'default' );
+            $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] ?? 'default' );
+            $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] ?? 'false_return' );
+            $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] ?? 'disabled' );
+            $transient_wp_rocket_customer_data_license_simulation = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_simulation'] ?? 'disabled' );
+            $transient_wp_rocket_customer_data_license_type = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_type'] ?? 'default' );
+            $transient_wp_rocket_customer_data_license_name = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_name'] ?? 'empty' );
+            $transient_wp_rocket_customer_data_license_expiration = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_expiration'] ?? 'default' );
+            $transient_wp_rocket_customer_data_auto_renewal = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_auto_renewal'] ?? 'default' );
 
-            $wpr_e2e_config = get_option( 'wpr_e2e_config' );
+            $wpr_e2e_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
+            if ( ! is_array( $wpr_e2e_config ) ) {
+                $wpr_e2e_config = [];
+            }
+
             $wpr_e2e_config['rocket_post_purge_urls'] = $rocket_post_purge_urls;
             $wpr_e2e_config['rocket_exclude_post_taxonomy'] = $rocket_exclude_post_taxonomy;
             $wpr_e2e_config['rocket_rocket_insights_enabled'] = $rocket_rocket_insights_enabled;
             $wpr_e2e_config['transient_wp_rocket_pricing'] = $transient_wp_rocket_pricing;
-            
-            update_option( 'wpr_e2e_config', $wpr_e2e_config );
+            $wpr_e2e_config['transient_wp_rocket_customer_data_license_simulation'] = $transient_wp_rocket_customer_data_license_simulation;
+            $wpr_e2e_config['transient_wp_rocket_customer_data_license_type'] = $transient_wp_rocket_customer_data_license_type;
+            $wpr_e2e_config['transient_wp_rocket_customer_data_license_name'] = $transient_wp_rocket_customer_data_license_name;
+            $wpr_e2e_config['transient_wp_rocket_customer_data_license_expiration'] = $transient_wp_rocket_customer_data_license_expiration;
+            $wpr_e2e_config['transient_wp_rocket_customer_data_auto_renewal'] = $transient_wp_rocket_customer_data_auto_renewal;
+
+            update_option( CONFIG['PLUGIN_OPTION'], $wpr_e2e_config );
 
             $arg = [
                 self::$plugin_id . '_response' => 'success',

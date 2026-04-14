@@ -19,7 +19,8 @@ class Subscriber implements Subscriber_Interface {
             'rocket_post_purge_urls' => 'purge_urls',
             'rocket_exclude_post_taxonomy' => [ 'exclude_post_taxonomy', 12 ],
             'rocket_rocket_insights_enabled' => 'rocket_insights_enabled',
-            'transient_wp_rocket_pricing' => 'transient_wp_rocket_pricing',
+            'transient_wp_rocket_pricing' => [ 'transient_wp_rocket_pricing', 10 ],
+            'transient_wp_rocket_customer_data' => [ 'transient_wp_rocket_customer_data_license_simulation', 11 ]
         ];
     }
 
@@ -137,5 +138,109 @@ class Subscriber implements Subscriber_Interface {
         ];
 
         return $value;
+    }
+
+    /**
+     * Simulate license values in transient customer data.
+     *
+     * @param mixed $value Transient value.
+     * @return mixed
+     */
+    public function transient_wp_rocket_customer_data_license_simulation( $value ) {
+        $license_simulation = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_simulation' );
+
+        if ( 'enabled' !== $license_simulation ) {
+            return $value;
+        }
+
+        if ( empty( $value ) || ! is_object( $value ) ) {
+            return $value;
+        }
+
+        $this->apply_simulated_license_values_to_object( $value );
+
+        return $value;
+    }
+
+
+    /**
+     * Apply simulated license values to an object payload.
+     *
+     * @param object $value License payload object.
+     * @return void
+     */
+    private function apply_simulated_license_values_to_object( object $value ) : void {
+        $license_type = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' );
+        if ( ! empty( $license_type ) && 'default' !== $license_type ) {
+            $value->licence_account = $license_type;
+        }
+
+        $license_name = $this->get_simulated_license_name();
+        if ( null !== $license_name ) {
+            if ( ! isset( $value->licence ) || ! is_object( $value->licence ) ) {
+                $value->licence = (object) [];
+            }
+
+            $value->licence->name = $license_name;
+        }
+
+        $expiration = $this->get_simulated_license_expiration();
+        if ( null !== $expiration ) {
+            $value->licence_expiration = $expiration;
+        }
+
+        $auto_renewal = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_auto_renewal' );
+        if ( 'enabled' === $auto_renewal ) {
+            $value->has_auto_renew = true;
+        } elseif ( 'disabled' === $auto_renewal ) {
+            $value->has_auto_renew = false;
+        }
+    }
+
+    /**
+     * Return simulated license expiration timestamp.
+     *
+     * @return int|null
+     */
+    private function get_simulated_license_expiration() {
+        $expiration = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_expiration' );
+
+        switch ( $expiration ) {
+            case 'expired':
+                return strtotime( '-1 month' );
+            case 'not_expired':
+                return strtotime( '+1 year' );
+            case 'expiring_soon':
+                return strtotime( '+5 days' );
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Return simulated license name.
+     *
+     * @return string|null
+     */
+    private function get_simulated_license_name() {
+        $license_name = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_name' );
+
+        switch ( $license_name ) {
+            case 'single':
+                return 'Single';
+            case 'plus':
+                return 'Plus';
+            case 'multi_50':
+                return 'Multi 50';
+            case 'multi_100':
+                return 'Multi 100';
+            case 'multi_500':
+                return 'Multi 500';
+            case 'infinite':
+                return 'Infinite';
+            case 'empty':
+            default:
+                return '';
+        }
     }
 }

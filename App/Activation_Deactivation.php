@@ -17,6 +17,11 @@ class Activation_Deactivation {
             'rocket_exclude_post_taxonomy' => 'default',
             'rocket_rocket_insights_enabled' => 'false_return',
             'transient_wp_rocket_pricing' => 'disabled',
+            'transient_wp_rocket_customer_data_license_simulation' => 'disabled',
+            'transient_wp_rocket_customer_data_license_type' => 'default',
+            'transient_wp_rocket_customer_data_license_name' => 'empty',
+            'transient_wp_rocket_customer_data_license_expiration' => 'default',
+            'transient_wp_rocket_customer_data_auto_renewal' => 'default',
         ];
 
         $existing_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
