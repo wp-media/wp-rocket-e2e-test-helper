@@ -134,17 +134,6 @@
             ];
             $license_type_state = $this->form_data['filters']['transient_wp_rocket_customer_data_license_type']['state'] ?? 'default';
 
-            $license_name_options = $this->form_data['filters']['transient_wp_rocket_customer_data_license_name']['form_data'] ?? [
-                'empty' => 'empty',
-                'single' => 'Single',
-                'plus' => 'Plus',
-                'multi_50' => 'Multi 50',
-                'multi_100' => 'Multi 100',
-                'multi_500' => 'Multi 500',
-                'infinite' => 'Infinite',
-            ];
-            $license_name_state = $this->form_data['filters']['transient_wp_rocket_customer_data_license_name']['state'] ?? 'empty';
-
             $license_expiration_options = $this->form_data['filters']['transient_wp_rocket_customer_data_license_expiration']['form_data'] ?? [
                 'default' => 'keep existing',
                 'not_expired' => 'not expired (+1 year)',
@@ -179,15 +168,7 @@
                 </select>
             </div>
 
-            <div class="mb-3 w-50">
-                <label for="transient_wp_rocket_customer_data_license_name" class="form-label">License name:</label>
-                <select class="form-select" name="transient_wp_rocket_customer_data_license_name" id="transient_wp_rocket_customer_data_license_name" aria-label="License name">
-                    <?php foreach ( $license_name_options as $key => $value ) : ?>
-                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo (string) $key === (string) $license_name_state ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
+            
             <div class="mb-3 w-50">
                 <label for="transient_wp_rocket_customer_data_license_expiration" class="form-label">Expiration state:</label>
                 <select class="form-select" name="transient_wp_rocket_customer_data_license_expiration" id="transient_wp_rocket_customer_data_license_expiration" aria-label="License expiration state">

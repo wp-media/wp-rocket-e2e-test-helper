@@ -19,7 +19,6 @@ class Activation_Deactivation {
             'transient_wp_rocket_pricing' => 'disabled',
             'transient_wp_rocket_customer_data_license_simulation' => 'disabled',
             'transient_wp_rocket_customer_data_license_type' => 'default',
-            'transient_wp_rocket_customer_data_license_name' => 'empty',
             'transient_wp_rocket_customer_data_license_expiration' => 'default',
             'transient_wp_rocket_customer_data_auto_renewal' => 'default',
         ];
@@ -28,7 +27,7 @@ class Activation_Deactivation {
         
         // Only keep existing non-empty values, otherwise use defaults
         foreach ( $defaults as $key => $default_value ) {
-            if ( ! isset( $existing_config[ $key ] ) || $existing_config[ $key ] === '' || $existing_config[ $key ] === false ) {
+            if ( ! isset( $existing_config[ $key ] ) || $existing_config[ $key ] === false ) {
                 $existing_config[ $key ] = $default_value;
             }
         }

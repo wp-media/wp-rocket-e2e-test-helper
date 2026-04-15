@@ -102,7 +102,6 @@ class Subscriber implements Subscriber_Interface {
             $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] ?? 'disabled' );
             $transient_wp_rocket_customer_data_license_simulation = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_simulation'] ?? 'disabled' );
             $transient_wp_rocket_customer_data_license_type = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_type'] ?? 'default' );
-            $transient_wp_rocket_customer_data_license_name = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_name'] ?? 'empty' );
             $transient_wp_rocket_customer_data_license_expiration = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_expiration'] ?? 'default' );
             $transient_wp_rocket_customer_data_auto_renewal = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_auto_renewal'] ?? 'default' );
 
@@ -117,7 +116,6 @@ class Subscriber implements Subscriber_Interface {
             $wpr_e2e_config['transient_wp_rocket_pricing'] = $transient_wp_rocket_pricing;
             $wpr_e2e_config['transient_wp_rocket_customer_data_license_simulation'] = $transient_wp_rocket_customer_data_license_simulation;
             $wpr_e2e_config['transient_wp_rocket_customer_data_license_type'] = $transient_wp_rocket_customer_data_license_type;
-            $wpr_e2e_config['transient_wp_rocket_customer_data_license_name'] = $transient_wp_rocket_customer_data_license_name;
             $wpr_e2e_config['transient_wp_rocket_customer_data_license_expiration'] = $transient_wp_rocket_customer_data_license_expiration;
             $wpr_e2e_config['transient_wp_rocket_customer_data_auto_renewal'] = $transient_wp_rocket_customer_data_auto_renewal;
 

@@ -173,16 +173,17 @@ class Subscriber implements Subscriber_Interface {
         $license_type = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' );
         if ( ! empty( $license_type ) && 'default' !== $license_type ) {
             $value->licence_account = $license_type;
-        }
 
-        $license_name = $this->get_simulated_license_name();
-        if ( null !== $license_name ) {
-            if ( ! isset( $value->licence ) || ! is_object( $value->licence ) ) {
-                $value->licence = (object) [];
+            $license_name = $this->get_simulated_license_name();
+            if ( null !== $license_name ) {
+                if ( ! isset( $value->licence ) || ! is_object( $value->licence ) ) {
+                    $value->licence = (object) [];
+                }
+                $value->licence->name = $license_name;
             }
-
-            $value->licence->name = $license_name;
         }
+
+
 
         $expiration = $this->get_simulated_license_expiration();
         if ( null !== $expiration ) {
@@ -223,24 +224,25 @@ class Subscriber implements Subscriber_Interface {
      * @return string|null
      */
     private function get_simulated_license_name() {
-        $license_name = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_name' );
+        $license_type = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' );
 
-        switch ( $license_name ) {
-            case 'single':
+        switch ( $license_type ) {
+            case '1':
                 return 'Single';
-            case 'plus':
+            case '3':
                 return 'Plus';
-            case 'multi_50':
+            case '50':
                 return 'Multi 50';
-            case 'multi_100':
+            case '100':
                 return 'Multi 100';
-            case 'multi_500':
+            case '500':
                 return 'Multi 500';
-            case 'infinite':
+            case '-1':
                 return 'Infinite';
-            case 'empty':
+            case 'default':
             default:
                 return '';
         }
+
     }
 }

@@ -61,18 +61,6 @@ return [
             ],
             'state' => rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' ) ?? 'default',
         ],
-        'transient_wp_rocket_customer_data_license_name' => [
-            'form_data' => [
-                'empty' => 'empty',
-                'single' => 'Single',
-                'plus' => 'Plus',
-                'multi_50' => 'Multi 50',
-                'multi_100' => 'Multi 100',
-                'multi_500' => 'Multi 500',
-                'infinite' => 'Infinite',
-            ],
-            'state' => rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_name' ) ?? 'empty',
-        ],
         'transient_wp_rocket_customer_data_license_expiration' => [
             'form_data' => [
                 'default' => 'keep existing',
