@@ -96,17 +96,21 @@
                 </select>
             </div>
 
-            <h5>License Simulation</h5>
+            <h5>License Type Override</h5>
             <div class="block">
                 <pre>
                     <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
+                    add_filter( 'pre_get_rocket_option_consumer_key', function() {
+                        return '';
+                    } );
+                    add_filter( 'pre_get_rocket_option_consumer_email', function() {
+                        return '';
+                    } );
                     add_filter( 'transient_wp_rocket_customer_data', function ( $value ) {
                         if ( empty( $value ) ) {
                             return $value;
                         }
-                        $value->licence->name = '';
-                        $value->licence_account = '3';
-                        $value->licence_expiration = strtotime( '+5 days' );
+                        $value->licence_expiration = strtotime( '+4 days' );
                         $value->has_auto_renew = false;
                         return $value;
                     } );
@@ -114,75 +118,29 @@
                 </pre>
             </div>
 
-
-            <?php
-            $license_simulation_options = $this->form_data['filters']['transient_wp_rocket_customer_data_license_simulation']['form_data'] ?? [
-                'disabled' => 'disabled',
-                'enabled' => 'enabled',
-            ];
-            $license_simulation_state = $this->form_data['filters']['transient_wp_rocket_customer_data_license_simulation']['state'] ?? 'disabled';
-
-
-            $license_type_options = $this->form_data['filters']['transient_wp_rocket_customer_data_license_type']['form_data'] ?? [
-                'default' => 'keep existing',
-                '1' => '1 - single',
-                '3' => '3 - plus',
-                '50' => '50 - multi50',
-                '100' => '100 - multi100',
-                '500' => '500 - multi500',
-                '-1' => '-1 - infinite',
-            ];
-            $license_type_state = $this->form_data['filters']['transient_wp_rocket_customer_data_license_type']['state'] ?? 'default';
-
-            $license_expiration_options = $this->form_data['filters']['transient_wp_rocket_customer_data_license_expiration']['form_data'] ?? [
-                'default' => 'keep existing',
-                'not_expired' => 'not expired (+1 year)',
-                'expiring_soon' => 'expiring soon (+5 days)',
-                'expired' => 'expired (-1 month)',
-            ];
-            $license_expiration_state = $this->form_data['filters']['transient_wp_rocket_customer_data_license_expiration']['state'] ?? 'default';
-
-            $auto_renewal_options = $this->form_data['filters']['transient_wp_rocket_customer_data_auto_renewal']['form_data'] ?? [
-                'default' => 'keep existing',
-                'enabled' => 'enabled',
-                'disabled' => 'disabled',
-            ];
-            $auto_renewal_state = $this->form_data['filters']['transient_wp_rocket_customer_data_auto_renewal']['state'] ?? 'default';
-            ?>
-
             <div class="mb-3 w-50">
-                <label for="transient_wp_rocket_customer_data_license_simulation" class="form-label">Apply <code>transient_wp_rocket_customer_data</code> license override:</label>
-                <select class="form-select" name="transient_wp_rocket_customer_data_license_simulation" id="transient_wp_rocket_customer_data_license_simulation" aria-label="transient_wp_rocket_customer_data license override state">
-                    <?php foreach ( $license_simulation_options as $key => $value ) : ?>
-                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $license_simulation_state ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
+                <label for="license_type_override" class="form-label">License type (overrides consumer key &amp; email):</label>
+                <select class="form-select" name="license_type_override" id="license_type_override" aria-label="License type override">
+                    <?php foreach ( $this->form_data['filters']['license_type_override']['form_data'] as $key => $value ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['license_type_override']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="mb-3 w-50">
-                <label for="transient_wp_rocket_customer_data_license_type" class="form-label">License type:</label>
-                <select class="form-select" name="transient_wp_rocket_customer_data_license_type" id="transient_wp_rocket_customer_data_license_type" aria-label="License type">
-                    <?php foreach ( $license_type_options as $key => $value ) : ?>
-                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo (string) $key === (string) $license_type_state ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-
-            
-            <div class="mb-3 w-50">
-                <label for="transient_wp_rocket_customer_data_license_expiration" class="form-label">Expiration state:</label>
-                <select class="form-select" name="transient_wp_rocket_customer_data_license_expiration" id="transient_wp_rocket_customer_data_license_expiration" aria-label="License expiration state">
-                    <?php foreach ( $license_expiration_options as $key => $value ) : ?>
-                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $license_expiration_state ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
+                <label for="license_expiration_override" class="form-label">License expiration:</label>
+                <select class="form-select" name="license_expiration_override" id="license_expiration_override" aria-label="License expiration override">
+                    <?php foreach ( $this->form_data['filters']['license_expiration_override']['form_data'] as $key => $value ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['license_expiration_override']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
             <div class="mb-3 w-50">
-                <label for="transient_wp_rocket_customer_data_auto_renewal" class="form-label">Auto renewal state:</label>
-                <select class="form-select" name="transient_wp_rocket_customer_data_auto_renewal" id="transient_wp_rocket_customer_data_auto_renewal" aria-label="Auto renewal state">
-                    <?php foreach ( $auto_renewal_options as $key => $value ) : ?>
-                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $auto_renewal_state ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
+                <label for="license_auto_renew_override" class="form-label">Auto renew:</label>
+                <select class="form-select" name="license_auto_renew_override" id="license_auto_renew_override" aria-label="License auto renew override">
+                    <?php foreach ( $this->form_data['filters']['license_auto_renew_override']['form_data'] as $key => $value ) : ?>
+                        <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['license_auto_renew_override']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

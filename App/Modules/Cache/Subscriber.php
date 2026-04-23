@@ -20,7 +20,66 @@ class Subscriber implements Subscriber_Interface {
             'rocket_exclude_post_taxonomy' => [ 'exclude_post_taxonomy', 12 ],
             'rocket_rocket_insights_enabled' => 'rocket_insights_enabled',
             'transient_wp_rocket_pricing' => [ 'transient_wp_rocket_pricing', 10 ],
-            'transient_wp_rocket_customer_data' => [ 'transient_wp_rocket_customer_data_license_simulation', 11 ]
+            'transient_wp_rocket_customer_data' => [ 'transient_wp_rocket_customer_data_license_override', 11 ],
+            'pre_get_rocket_option_consumer_key' => 'pre_get_rocket_option_consumer_key',
+            'pre_get_rocket_option_consumer_email' => 'pre_get_rocket_option_consumer_email',
+        ];
+    }
+
+    /**
+     * Override consumer key based on selected license type.
+     *
+     * @param mixed $value Existing option value.
+     * @return mixed
+     */
+    public function pre_get_rocket_option_consumer_key( $value = '' ) {
+        $credentials = $this->get_selected_license_credentials();
+        if ( empty( $credentials['key'] ) ) {
+            return $value;
+        }
+
+        return $credentials['key'];
+    }
+
+    /**
+     * Override consumer email based on selected license type.
+     *
+     * @param mixed $value Existing option value.
+     * @return mixed
+     */
+    public function pre_get_rocket_option_consumer_email( $value = '' ) {
+        $credentials = $this->get_selected_license_credentials();
+        if ( empty( $credentials['email'] ) ) {
+            return $value;
+        }
+
+        return $credentials['email'];
+    }
+
+    /**
+     * Return credentials for the selected license type, or empty array if none/default selected.
+     *
+     * @return array
+     */
+    private function get_selected_license_credentials() : array {
+        $license_type = rocket_e2e_get_option( 'license_type_override' );
+        if ( ! is_string( $license_type ) || '' === $license_type || 'default' === $license_type ) {
+            return [];
+        }
+
+        $credentials_by_type = CONFIG['LICENSE_TYPE_CREDENTIALS'] ?? [];
+        if ( ! is_array( $credentials_by_type ) || ! isset( $credentials_by_type[ $license_type ] ) ) {
+            return [];
+        }
+
+        $credentials = $credentials_by_type[ $license_type ];
+        if ( ! is_array( $credentials ) ) {
+            return [];
+        }
+
+        return [
+            'key'   => isset( $credentials['key'] ) ? (string) $credentials['key'] : '',
+            'email' => isset( $credentials['email'] ) ? (string) $credentials['email'] : '',
         ];
     }
 
@@ -141,108 +200,52 @@ class Subscriber implements Subscriber_Interface {
     }
 
     /**
-     * Simulate license values in transient customer data.
+     * Override customer data license fields from UI selections.
      *
      * @param mixed $value Transient value.
      * @return mixed
      */
-    public function transient_wp_rocket_customer_data_license_simulation( $value ) {
-        $license_simulation = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_simulation' );
-
-        if ( 'enabled' !== $license_simulation ) {
-            return $value;
-        }
-
+    public function transient_wp_rocket_customer_data_license_override( $value ) {
         if ( empty( $value ) || ! is_object( $value ) ) {
             return $value;
         }
 
-        $this->apply_simulated_license_values_to_object( $value );
-
-        return $value;
-    }
-
-
-    /**
-     * Apply simulated license values to an object payload.
-     *
-     * @param object $value License payload object.
-     * @return void
-     */
-    private function apply_simulated_license_values_to_object( object $value ) : void {
-        $license_type = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' );
-        if ( ! empty( $license_type ) && 'default' !== $license_type ) {
-            $value->licence_account = $license_type;
-
-            $license_name = $this->get_simulated_license_name();
-            if ( null !== $license_name ) {
-                if ( ! isset( $value->licence ) || ! is_object( $value->licence ) ) {
-                    $value->licence = (object) [];
-                }
-                $value->licence->name = $license_name;
-            }
-        }
-
-
-
-        $expiration = $this->get_simulated_license_expiration();
+        $expiration = $this->get_license_expiration_override_timestamp();
         if ( null !== $expiration ) {
             $value->licence_expiration = $expiration;
         }
 
-        $auto_renewal = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_auto_renewal' );
-        if ( 'enabled' === $auto_renewal ) {
+        $auto_renew = rocket_e2e_get_option( 'license_auto_renew_override' );
+        if ( 'true' === $auto_renew ) {
             $value->has_auto_renew = true;
-        } elseif ( 'disabled' === $auto_renewal ) {
+        }
+
+        if ( 'false' === $auto_renew ) {
             $value->has_auto_renew = false;
         }
+
+        return $value;
     }
 
     /**
-     * Return simulated license expiration timestamp.
+     * Return override expiration timestamp based on selected state.
      *
      * @return int|null
      */
-    private function get_simulated_license_expiration() {
-        $expiration = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_expiration' );
+    private function get_license_expiration_override_timestamp() {
+        $expiration = rocket_e2e_get_option( 'license_expiration_override' );
 
         switch ( $expiration ) {
             case 'expired':
-                return strtotime( '-1 month' );
+                return strtotime( '-100 days' );
             case 'not_expired':
-                return strtotime( '+1 year' );
+                return strtotime( '+100 days' );
             case 'expiring_soon':
-                return strtotime( '+5 days' );
+                return strtotime( '+4 days' );
+            case 'just_expired':
+                return strtotime( '-4 days' );
             default:
                 return null;
         }
-    }
-
-    /**
-     * Return simulated license name.
-     *
-     * @return string|null
-     */
-    private function get_simulated_license_name() {
-        $license_type = rocket_e2e_get_option( 'transient_wp_rocket_customer_data_license_type' );
-
-        switch ( $license_type ) {
-            case '1':
-                return 'Single';
-            case '3':
-                return 'Plus';
-            case '50':
-                return 'Multi 50';
-            case '100':
-                return 'Multi 100';
-            case '500':
-                return 'Multi 500';
-            case '-1':
-                return 'Infinite';
-            case 'default':
-            default:
-                return '';
-        }
-
     }
 }

@@ -100,10 +100,9 @@ class Subscriber implements Subscriber_Interface {
             $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] ?? 'default' );
             $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] ?? 'false_return' );
             $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] ?? 'disabled' );
-            $transient_wp_rocket_customer_data_license_simulation = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_simulation'] ?? 'disabled' );
-            $transient_wp_rocket_customer_data_license_type = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_type'] ?? 'default' );
-            $transient_wp_rocket_customer_data_license_expiration = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_license_expiration'] ?? 'default' );
-            $transient_wp_rocket_customer_data_auto_renewal = sanitize_text_field( $_POST['transient_wp_rocket_customer_data_auto_renewal'] ?? 'default' );
+            $license_type_override = sanitize_text_field( $_POST['license_type_override'] ?? 'default' );
+            $license_expiration_override = sanitize_text_field( $_POST['license_expiration_override'] ?? 'default' );
+            $license_auto_renew_override = sanitize_text_field( $_POST['license_auto_renew_override'] ?? 'default' );
 
             $wpr_e2e_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
             if ( ! is_array( $wpr_e2e_config ) ) {
@@ -114,10 +113,10 @@ class Subscriber implements Subscriber_Interface {
             $wpr_e2e_config['rocket_exclude_post_taxonomy'] = $rocket_exclude_post_taxonomy;
             $wpr_e2e_config['rocket_rocket_insights_enabled'] = $rocket_rocket_insights_enabled;
             $wpr_e2e_config['transient_wp_rocket_pricing'] = $transient_wp_rocket_pricing;
-            $wpr_e2e_config['transient_wp_rocket_customer_data_license_simulation'] = $transient_wp_rocket_customer_data_license_simulation;
-            $wpr_e2e_config['transient_wp_rocket_customer_data_license_type'] = $transient_wp_rocket_customer_data_license_type;
-            $wpr_e2e_config['transient_wp_rocket_customer_data_license_expiration'] = $transient_wp_rocket_customer_data_license_expiration;
-            $wpr_e2e_config['transient_wp_rocket_customer_data_auto_renewal'] = $transient_wp_rocket_customer_data_auto_renewal;
+            // License override settings
+            $wpr_e2e_config['license_type_override'] = $license_type_override;
+            $wpr_e2e_config['license_expiration_override'] = $license_expiration_override;
+            $wpr_e2e_config['license_auto_renew_override'] = $license_auto_renew_override;
 
             update_option( CONFIG['PLUGIN_OPTION'], $wpr_e2e_config );
 
