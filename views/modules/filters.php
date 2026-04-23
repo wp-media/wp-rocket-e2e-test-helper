@@ -100,17 +100,16 @@
             <div class="block">
                 <pre>
                     <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
-                    // Select a value in the "License type override" dropdown below.
-                    // The selected license type uses credentials defined in
-                    // CONFIG['LICENSE_TYPE_CREDENTIALS'].
-                    add_filter( 'transient_wp_rocket_customer_data', function ( $value ) {
-                        if ( empty( $value ) ) {
-                            return $value;
-                        }
-                        $value->licence_expiration = strtotime( '+4 days' );
-                        $value->has_auto_renew = false;
+                    // Select a value in the "License type" dropdown below.
+                    // The selected type maps to credentials in config/license-credentials.php.
+                    add_filter( 'pre_get_rocket_option_consumer_key', function ( $value ) {
                         return $value;
                     } );
+                    add_filter( 'pre_get_rocket_option_consumer_email', function ( $value ) {
+                        return $value;
+                    } );
+                    // Note: expiration and auto-renew are controlled by the
+                    // "License expiration" and "Auto renew" dropdowns below.
                     </code>
                 </pre>
             </div>

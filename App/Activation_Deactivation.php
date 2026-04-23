@@ -23,6 +23,9 @@ class Activation_Deactivation {
         ];
 
         $existing_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
+        if ( ! is_array( $existing_config ) ) {
+            $existing_config = [];
+        }
         
         // Only keep existing non-empty values, otherwise use defaults
         foreach ( $defaults as $key => $default_value ) {

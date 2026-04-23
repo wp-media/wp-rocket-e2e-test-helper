@@ -185,7 +185,7 @@ class Subscriber implements Subscriber_Interface {
             return $value;
         }
 
-        if ( empty( $value ) ) {
+        if ( empty( $value ) || ! is_object( $value ) ) {
             return $value;
         }
 
