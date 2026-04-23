@@ -100,12 +100,9 @@
             <div class="block">
                 <pre>
                     <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
-                    add_filter( 'pre_get_rocket_option_consumer_key', function() {
-                        return '';
-                    } );
-                    add_filter( 'pre_get_rocket_option_consumer_email', function() {
-                        return '';
-                    } );
+                    // Select a value in the "License type override" dropdown below.
+                    // The selected license type uses credentials defined in
+                    // CONFIG['LICENSE_TYPE_CREDENTIALS'].
                     add_filter( 'transient_wp_rocket_customer_data', function ( $value ) {
                         if ( empty( $value ) ) {
                             return $value;
