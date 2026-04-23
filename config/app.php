@@ -2,6 +2,8 @@
 
 $license_credentials_file = __DIR__ . '/license-credentials.php';
 $license_type_credentials = file_exists( $license_credentials_file ) ? ( require $license_credentials_file ) : [];
+// Ensure it's an array to prevent TypeError in array_replace_recursive()
+$license_type_credentials = is_array( $license_type_credentials ) ? $license_type_credentials : [];
 
 $local_license_credentials_file = __DIR__ . '/license-credentials.local.php';
 if ( file_exists( $local_license_credentials_file ) ) {

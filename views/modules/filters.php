@@ -100,20 +100,10 @@
             <div class="block">
                 <pre>
                     <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
-                    add_filter( 'pre_get_rocket_option_consumer_key', function() {
-                        return '';
-                    } );
-                    add_filter( 'pre_get_rocket_option_consumer_email', function() {
-                        return '';
-                    } );
-                    add_filter( 'transient_wp_rocket_customer_data', function ( $value ) {
-                        if ( empty( $value ) ) {
-                            return $value;
-                        }
-                        $value->licence_expiration = strtotime( '+4 days' );
-                        $value->has_auto_renew = false;
-                        return $value;
-                    } );
+                    // Credentials are loaded from config/license-credentials.php
+                    // and merged with local overrides. The selected license type
+                    // overrides pre_get_rocket_option_consumer_key/email automatically.
+                    // Expiration and auto-renew can also be overridden via the UI.
                     </code>
                 </pre>
             </div>
