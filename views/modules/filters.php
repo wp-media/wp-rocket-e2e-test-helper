@@ -72,7 +72,7 @@
                 <pre>
                     <code class="language-php line-numbers" data-prismjs-copy="Copy the snippet">
                     add_filter( 'transient_wp_rocket_pricing', function ( $value ) {
-                        if ( empty( $value ) ) {
+                        if ( empty( $value ) || ! is_object( $value ) ) {
                             return $value;
                         }
                         $value->promo = (object) [
