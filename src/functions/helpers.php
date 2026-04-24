@@ -8,11 +8,11 @@
  */
 function rocket_e2e_get_option( string $option ) {
     if ( ! get_option( CONFIG['PLUGIN_OPTION'] ) ) {
-        return false;
+        return null;
     }
 
     $options = get_option( CONFIG['PLUGIN_OPTION'] );
-    return $options[ $option ] ?? false;
+    return $options[ $option ] ?? null;
 }
 
 function rocket_e2e_direct_filesystem() {
