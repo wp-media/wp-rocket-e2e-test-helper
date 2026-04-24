@@ -30,7 +30,7 @@ class Activation_Deactivation {
         
         // Only keep existing non-empty values, otherwise use defaults
         foreach ( $defaults as $key => $default_value ) {
-            if ( ! isset( $existing_config[ $key ] ) || empty( $existing_config[ $key ] ) ) {
+            if ( ! array_key_exists( $key, $existing_config ) || null === $existing_config[ $key ] || '' === $existing_config[ $key ] ) {
                 $existing_config[ $key ] = $default_value;
             }
         }
