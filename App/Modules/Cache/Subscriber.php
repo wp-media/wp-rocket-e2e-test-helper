@@ -209,6 +209,8 @@ class Subscriber implements Subscriber_Interface {
         if ( empty( $value ) || ! is_object( $value ) ) {
             return $value;
         }
+        $value->date_created = strtotime( '-20 day' );
+
 
         $expiration = $this->get_license_expiration_override_timestamp();
         if ( null !== $expiration ) {
@@ -217,11 +219,11 @@ class Subscriber implements Subscriber_Interface {
 
         $auto_renew = rocket_e2e_get_option( 'license_auto_renew_override' );
         if ( 'true' === $auto_renew ) {
-            $value->has_auto_renew = true;
+            $value->has_auto_renew = 1;
         }
 
         if ( 'false' === $auto_renew ) {
-            $value->has_auto_renew = false;
+            $value->has_auto_renew = 0;
         }
 
         return $value;
