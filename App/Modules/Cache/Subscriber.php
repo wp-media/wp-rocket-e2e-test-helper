@@ -209,7 +209,11 @@ class Subscriber implements Subscriber_Interface {
         if ( empty( $value ) || ! is_object( $value ) ) {
             return $value;
         }
-        $value->date_created = strtotime( '-20 day' );
+
+        $date_created = $this->get_license_creation_date_override_timestamp();
+        if ( null !== $date_created ) {
+            $value->date_created = $date_created;
+        }
 
 
         $expiration = $this->get_license_expiration_override_timestamp();
@@ -246,6 +250,24 @@ class Subscriber implements Subscriber_Interface {
                 return strtotime( '+4 days' );
             case 'just_expired':
                 return strtotime( '-2 days' );
+            default:
+                return null;
+        }
+    }
+
+    /**
+     * Return override creation timestamp based on selected state.
+     *
+     * @return int|null
+     */
+    private function get_license_creation_date_override_timestamp() {
+        $creation_date = rocket_e2e_get_option( 'license_creation_date_override' );
+
+        switch ( $creation_date ) {
+            case 'created_2_days_ago':
+                return strtotime( '-2 days' );
+            case 'created_20_days_ago':
+                return strtotime( '-20 days' );
             default:
                 return null;
         }

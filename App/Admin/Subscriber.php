@@ -102,6 +102,7 @@ class Subscriber implements Subscriber_Interface {
             $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] ?? 'disabled' );
             $license_type_override = sanitize_text_field( $_POST['license_type_override'] ?? 'default' );
             $license_expiration_override = sanitize_text_field( $_POST['license_expiration_override'] ?? 'default' );
+            $license_creation_date_override = sanitize_text_field( $_POST['license_creation_date_override'] ?? 'default' );
             $license_auto_renew_override = sanitize_text_field( $_POST['license_auto_renew_override'] ?? 'default' );
 
             $wpr_e2e_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
@@ -116,6 +117,7 @@ class Subscriber implements Subscriber_Interface {
             // License override settings
             $wpr_e2e_config['license_type_override'] = $license_type_override;
             $wpr_e2e_config['license_expiration_override'] = $license_expiration_override;
+            $wpr_e2e_config['license_creation_date_override'] = $license_creation_date_override;
             $wpr_e2e_config['license_auto_renew_override'] = $license_auto_renew_override;
 
             update_option( CONFIG['PLUGIN_OPTION'], $wpr_e2e_config );

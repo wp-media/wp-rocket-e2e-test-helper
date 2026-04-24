@@ -19,6 +19,7 @@ class Activation_Deactivation {
             'transient_wp_rocket_pricing' => 'disabled',
             'license_type_override' => 'default',
             'license_expiration_override' => 'default',
+            'license_creation_date_override' => 'default',
             'license_auto_renew_override' => 'default',
         ];
 
