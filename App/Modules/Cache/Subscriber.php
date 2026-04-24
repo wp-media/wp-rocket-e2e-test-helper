@@ -245,7 +245,7 @@ class Subscriber implements Subscriber_Interface {
             case 'expiring_soon':
                 return strtotime( '+4 days' );
             case 'just_expired':
-                return strtotime( '-4 days' );
+                return strtotime( '-2 days' );
             default:
                 return null;
         }

@@ -56,12 +56,14 @@ return [
             'form_data' => [
                 'default'       => 'keep existing',
                 'expired'       => 'expired (today -100 days)',
-                'just_expired'  => 'just expired (today -4 days)',
+                'just_expired'  => 'just expired (today -2 days)',
                 'expiring_soon' => 'expiring soon (today +4 days)',
                 'not_expired'   => 'not expired (today +100 days)',
             ],
             'state' => rocket_e2e_get_option( 'license_expiration_override' ) ?? 'default',
         ],
+        // if auto renew is enabled, the just expired and  exprining soon won't be displayed
+        // while the promo and expired banner will be displayed
         'license_auto_renew_override' => [
             'form_data' => [
                 'default' => 'keep existing',
