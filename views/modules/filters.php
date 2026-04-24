@@ -133,7 +133,7 @@
             </div>
 
             <div class="mb-3 w-50">
-                <label for="license_auto_renew_override" class="form-label">Auto renew:</label>
+                <label for="license_auto_renew_override" class="form-label">Auto renew: if enabled, expiring soon and just expired banners will not be displayed</label>
                 <select class="form-select" name="license_auto_renew_override" id="license_auto_renew_override" aria-label="License auto renew override">
                     <?php foreach ( $this->form_data['filters']['license_auto_renew_override']['form_data'] as $key => $value ) : ?>
                         <option value="<?php echo esc_attr( $key ); ?>" <?php echo $key === $this->form_data['filters']['license_auto_renew_override']['state'] ? 'selected="selected"' : '' ?> ><?php echo esc_html( $value ); ?></option>
