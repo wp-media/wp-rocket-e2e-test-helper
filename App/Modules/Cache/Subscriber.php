@@ -10,7 +10,7 @@ use WP_Rocket_e2e\Events\Subscriber_Interface;
 class Subscriber implements Subscriber_Interface {
 
     /**
-     * Returns array of events this listen to.
+     * Returns array of events this listens to.
      *
      * @return array
      */
