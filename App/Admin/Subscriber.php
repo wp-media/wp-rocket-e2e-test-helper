@@ -93,6 +93,10 @@ class Subscriber implements Subscriber_Interface {
      * @return void
      */
     public function save_filter_returns() : void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         $nonce_field = self::$plugin_id . '_filters_form_nonce';
 
         if( isset( $_POST[ $nonce_field ] ) && wp_verify_nonce( $_POST[ $nonce_field ], $nonce_field ) ) {
@@ -137,6 +141,10 @@ class Subscriber implements Subscriber_Interface {
      * @return void
      */
     public function save_small_settings() : void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         if ( ! isset( $_GET['wpr_e2e_action'] ) && ! isset( $_GET[ 'wp_nonce' ] ) ) {
             return;
         }
