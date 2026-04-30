@@ -93,19 +93,38 @@ class Subscriber implements Subscriber_Interface {
      * @return void
      */
     public function save_filter_returns() : void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         $nonce_field = self::$plugin_id . '_filters_form_nonce';
 
         if( isset( $_POST[ $nonce_field ] ) && wp_verify_nonce( $_POST[ $nonce_field ], $nonce_field ) ) {
-            $rocket_post_purge_urls = sanitize_text_field( $_POST['rocket_post_purge_urls'] );
-            $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] );
-            $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] );
+            $rocket_post_purge_urls = sanitize_text_field( $_POST['rocket_post_purge_urls'] ?? 'default' );
+            $rocket_exclude_post_taxonomy = sanitize_text_field( $_POST['rocket_exclude_post_taxonomy'] ?? 'default' );
+            $rocket_rocket_insights_enabled = sanitize_text_field( $_POST['rocket_rocket_insights_enabled'] ?? 'false_return' );
+            $transient_wp_rocket_pricing = sanitize_text_field( $_POST['transient_wp_rocket_pricing'] ?? 'disabled' );
+            $license_type_override = sanitize_text_field( $_POST['license_type_override'] ?? 'default' );
+            $license_expiration_override = sanitize_text_field( $_POST['license_expiration_override'] ?? 'default' );
+            $license_creation_date_override = sanitize_text_field( $_POST['license_creation_date_override'] ?? 'default' );
+            $license_auto_renew_override = sanitize_text_field( $_POST['license_auto_renew_override'] ?? 'default' );
 
-            $wpr_e2e_config = get_option( 'wpr_e2e_config' );
+            $wpr_e2e_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
+            if ( ! is_array( $wpr_e2e_config ) ) {
+                $wpr_e2e_config = [];
+            }
+
             $wpr_e2e_config['rocket_post_purge_urls'] = $rocket_post_purge_urls;
             $wpr_e2e_config['rocket_exclude_post_taxonomy'] = $rocket_exclude_post_taxonomy;
             $wpr_e2e_config['rocket_rocket_insights_enabled'] = $rocket_rocket_insights_enabled;
-            
-            update_option( 'wpr_e2e_config', $wpr_e2e_config );
+            $wpr_e2e_config['transient_wp_rocket_pricing'] = $transient_wp_rocket_pricing;
+            // License override settings
+            $wpr_e2e_config['license_type_override'] = $license_type_override;
+            $wpr_e2e_config['license_expiration_override'] = $license_expiration_override;
+            $wpr_e2e_config['license_creation_date_override'] = $license_creation_date_override;
+            $wpr_e2e_config['license_auto_renew_override'] = $license_auto_renew_override;
+
+            update_option( CONFIG['PLUGIN_OPTION'], $wpr_e2e_config );
 
             $arg = [
                 self::$plugin_id . '_response' => 'success',
@@ -122,6 +141,10 @@ class Subscriber implements Subscriber_Interface {
      * @return void
      */
     public function save_small_settings() : void {
+        if ( ! current_user_can( 'manage_options' ) ) {
+            return;
+        }
+
         if ( ! isset( $_GET['wpr_e2e_action'] ) && ! isset( $_GET[ 'wp_nonce' ] ) ) {
             return;
         }

@@ -4,15 +4,15 @@
  * Retrieve single option.
  *
  * @param string $option Single option name.
- * @return void
+ * @return mixed|null The option value, or null if not found.
  */
 function rocket_e2e_get_option( string $option ) {
-    if ( ! get_option( CONFIG['PLUGIN_OPTION'] ) ) {
-        return false;
+    $options = get_option( CONFIG['PLUGIN_OPTION'] );
+    if ( ! $options || ! is_array( $options ) ) {
+        return null;
     }
 
-    $options = get_option( CONFIG['PLUGIN_OPTION'] );
-    return $options[ $option ] ?? false;
+    return $options[ $option ] ?? null;
 }
 
 function rocket_e2e_direct_filesystem() {

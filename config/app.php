@@ -1,5 +1,18 @@
 <?php
 
+$license_credentials_file = __DIR__ . '/license-credentials.php';
+$license_type_credentials = file_exists( $license_credentials_file ) ? ( require $license_credentials_file ) : [];
+// Ensure it's an array to prevent TypeError in array_replace_recursive()
+$license_type_credentials = is_array( $license_type_credentials ) ? $license_type_credentials : [];
+
+$local_license_credentials_file = __DIR__ . '/license-credentials.local.php';
+if ( file_exists( $local_license_credentials_file ) ) {
+    $local_credentials = require $local_license_credentials_file;
+    if ( is_array( $local_credentials ) ) {
+        $license_type_credentials = array_replace_recursive( $license_type_credentials, $local_credentials );
+    }
+}
+
 return [
     // Plugin file.
     'PLUGIN_FILE' => ( $plugin_file = str_replace( 'config/app.php', 'rocket-e2e-test-helper.php', __FILE__ ) ),
@@ -21,4 +34,7 @@ return [
 
     // Plugin Option.
     'PLUGIN_OPTION' => 'wpr_e2e_config',
+
+    // License credentials by type, read from config/license-credentials.php.
+    'LICENSE_TYPE_CREDENTIALS' => is_array( $license_type_credentials ) ? $license_type_credentials : [],
 ];

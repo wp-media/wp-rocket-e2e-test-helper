@@ -16,13 +16,21 @@ class Activation_Deactivation {
             'rocket_post_purge_urls' => 'default',
             'rocket_exclude_post_taxonomy' => 'default',
             'rocket_rocket_insights_enabled' => 'false_return',
+            'transient_wp_rocket_pricing' => 'disabled',
+            'license_type_override' => 'default',
+            'license_expiration_override' => 'default',
+            'license_creation_date_override' => 'default',
+            'license_auto_renew_override' => 'default',
         ];
 
         $existing_config = get_option( CONFIG['PLUGIN_OPTION'], [] );
+        if ( ! is_array( $existing_config ) ) {
+            $existing_config = [];
+        }
         
         // Only keep existing non-empty values, otherwise use defaults
         foreach ( $defaults as $key => $default_value ) {
-            if ( ! isset( $existing_config[ $key ] ) || $existing_config[ $key ] === '' || $existing_config[ $key ] === false ) {
+            if ( ! array_key_exists( $key, $existing_config ) || null === $existing_config[ $key ] || '' === $existing_config[ $key ] ) {
                 $existing_config[ $key ] = $default_value;
             }
         }
