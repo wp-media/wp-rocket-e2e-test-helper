@@ -32,7 +32,12 @@ class Notices {
         $content = $file_system->get_contents( WP_CONTENT_DIR . '/debug.log' );
 
         $patterns = implode( '|', $this->debug_log_patterns );
-        if ( ! preg_match( '#' . $patterns . '#', $content ) ) {
+        $lines = array_filter(
+            explode( "\n", $content ),
+            fn( $line ) => preg_match( '#' . $patterns . '#', $line ) && ! str_contains( $line, 'already exists' )
+        );
+
+        if ( empty( $lines ) ) {
             return;
         }
 
