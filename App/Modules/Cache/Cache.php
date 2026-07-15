@@ -129,6 +129,60 @@ class Cache {
     }
 
     /**
+     * Check that the homepage cache file was not regenerated (cleared) between two calls.
+     *
+     * The first call records the cache file's current mtime as a baseline and returns true.
+     * A subsequent call compares the current mtime against that baseline, clears it, and
+     * returns whether the file is unchanged.
+     *
+     * @return boolean
+     */
+    public function is_cache_preserved() : bool {
+        if ( ! is_wpr_active() ) {
+            return false;
+        }
+
+        $cache_file = $this->get_homepage_cache_file();
+
+        if ( ! $cache_file ) {
+            return false;
+        }
+
+        $current_mtime = rocket_e2e_direct_filesystem()->mtime( $cache_file );
+
+        $recorded_mtime = get_transient( 'rocket_e2e_homepage_cache_mtime' );
+
+        if ( false === $recorded_mtime ) {
+            set_transient( 'rocket_e2e_homepage_cache_mtime', $current_mtime, HOUR_IN_SECONDS );
+            return true;
+        }
+
+        delete_transient( 'rocket_e2e_homepage_cache_mtime' );
+
+        return (int) $recorded_mtime === (int) $current_mtime;
+    }
+
+    /**
+     * Locate the homepage cache file, http or https variant.
+     *
+     * @return string|false
+     */
+    private function get_homepage_cache_file() {
+        $file_system = rocket_e2e_direct_filesystem();
+        $cache_dir = $this->get_cache_root_dir();
+
+        foreach ( [ 'index.html', 'index-https.html' ] as $filename ) {
+            $path = $cache_dir . '/' . $filename;
+
+            if ( $file_system->exists( $path ) ) {
+                return $path;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Return root cache directory.
      *
      * @param boolean $user_cache True if test case is user cache.

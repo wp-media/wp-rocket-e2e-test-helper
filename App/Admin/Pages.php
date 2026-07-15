@@ -94,6 +94,17 @@ class Pages {
             ],
             $this->cache->is_common_cache_dir_used_for_users()
         );
+
+        $this->template->add_test_case(
+            'cache',
+            'should_not_regenerate_cache_on_admin_refresh',
+            'Should not regenerate homepage cache after an admin refresh',
+            [
+                'text' => 'Visit this tab, refresh wpr admin, then revisit this tab to compare',
+                'type' => 'info',
+            ],
+            $this->cache->is_cache_preserved()
+        );
     }
 
     private function tools_view() : void {
