@@ -15,12 +15,13 @@ class ServiceProvider extends AbstractServiceProvider {
         $services = [
             'cache_subscriber',
         ];
-        
+
         return in_array( $id, $services );
     }
 
     public function register() : void
     {
-        $this->getContainer()->add( 'cache_subscriber', CacheSubscriber::class );
+        $this->getContainer()->add( 'cache_subscriber', CacheSubscriber::class )
+        ->addArgument( $this->getContainer()->get( 'cache' ) );
     }
 }

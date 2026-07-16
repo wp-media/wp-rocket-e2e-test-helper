@@ -94,6 +94,34 @@ class Pages {
             ],
             $this->cache->is_common_cache_dir_used_for_users()
         );
+
+        $cache_preservation_state = $this->cache->get_cache_preservation_state();
+        $cache_preservation_notes = [
+            Cache::CACHE_NOT_STARTED => [
+                'text' => 'Not started',
+                'type' => 'info',
+            ],
+            Cache::CACHE_NOT_YET_COMPARED => [
+                'text' => 'Cached',
+                'type' => 'info',
+            ],
+            Cache::CACHE_PRESERVED => [
+                'text' => 'Homepage cache was preserved',
+                'type' => 'success',
+            ],
+            Cache::CACHE_REGENERATED => [
+                'text' => 'Homepage cache was regenerated',
+                'type' => 'danger',
+            ],
+        ];
+
+        $this->template->add_test_case(
+            'cache',
+            'should_not_regenerate_cache_on_admin_refresh',
+            'Should not regenerate homepage cache after an admin refresh',
+            $cache_preservation_notes[ $cache_preservation_state ],
+            $cache_preservation_state
+        );
     }
 
     private function tools_view() : void {

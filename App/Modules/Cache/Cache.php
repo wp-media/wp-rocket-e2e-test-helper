@@ -5,6 +5,36 @@ namespace WP_Rocket_e2e\App\Modules\Cache;
 class Cache {
 
     /**
+     * No cache file exists yet.
+     */
+    const CACHE_NOT_STARTED = 'not_started';
+
+    /**
+     * A baseline was just recorded (or the previous baseline was just consumed by this call);
+     * nothing has been compared against it yet.
+     */
+    const CACHE_NOT_YET_COMPARED = 'not_yet_compared';
+
+    /**
+     * Cache file's mtime matched the recorded baseline.
+     */
+    const CACHE_PRESERVED = 'preserved';
+
+    /**
+     * Cache file's mtime differed from the recorded baseline.
+     */
+    const CACHE_REGENERATED = 'regenerated';
+
+    /**
+     * Homepage cache file's mtime as captured at the start of the current request, before
+     * any admin-side hook (e.g. admin_init) has had a chance to clear it. False if no cache
+     * file existed at that point. Null until capture_request_start_snapshot() has run.
+     *
+     * @var int|false|null
+     */
+    private static $request_start_mtime = null;
+
+    /**
      * Cache tests paths.
      *
      * @var array Array of url paths to be tested against.
@@ -126,6 +156,107 @@ class Cache {
         }
 
         return (bool) $value['value'];
+    }
+
+    /**
+     * Snapshot the homepage cache file's mtime as early in the request as possible.
+     *
+     * Must run on a hook that fires before any admin-side clearing (e.g. 'init', which
+     * always completes before 'admin_init'). Without this, checking the file at render
+     * time (inside the admin page callback) would run *after* the same request's own
+     * admin_init has already had a chance to clear the cache, making it impossible to
+     * ever observe an unmolested "before" state on a site where the bug fires on every
+     * admin request.
+     *
+     * Idempotent: only the first call in a given request actually captures anything.
+     *
+     * @return void
+     */
+    public function capture_request_start_snapshot() : void {
+        if ( null !== self::$request_start_mtime ) {
+            return;
+        }
+
+        if ( ! is_wpr_active() ) {
+            self::$request_start_mtime = false;
+            return;
+        }
+
+        $cache_file = $this->get_homepage_cache_file();
+
+        self::$request_start_mtime = $cache_file ? rocket_e2e_direct_filesystem()->mtime( $cache_file ) : false;
+    }
+
+    /**
+     * Check whether the homepage cache file was preserved (not regenerated) between two calls.
+     *
+     * A call with no cache file yet returns self::CACHE_NOT_STARTED. A call with no recorded
+     * baseline (or right after the previous baseline was consumed) records the request-start
+     * mtime and returns self::CACHE_NOT_YET_COMPARED, since nothing has been compared yet. The
+     * following call compares that request's start mtime against the recorded baseline, clears
+     * it, and returns self::CACHE_PRESERVED or self::CACHE_REGENERATED.
+     *
+     * Relies on capture_request_start_snapshot() having already run this request (see
+     * Cache\Subscriber, hooked on 'init') so the mtime reflects the state before this
+     * request's own admin_init could have cleared it.
+     *
+     * @return string One of self::CACHE_NOT_STARTED, self::CACHE_NOT_YET_COMPARED, self::CACHE_PRESERVED, self::CACHE_REGENERATED.
+     */
+    public function get_cache_preservation_state() : string {
+        if ( ! is_wpr_active() ) {
+            return self::CACHE_NOT_STARTED;
+        }
+
+        $this->capture_request_start_snapshot();
+
+        $current_mtime = self::$request_start_mtime;
+        $recorded_mtime = get_option( 'rocket_e2e_homepage_cache_mtime', false );
+
+        // No baseline recorded yet: record one now, if there's a file to measure.
+        //
+        // A plain option is used instead of a transient because WP Rocket's cache-clearing
+        // routine calls wp_cache_flush(), and on sites with a persistent object cache,
+        // transients are stored only in the object cache (never written to wp_options) —
+        // so the very clear we're testing for would silently wipe a transient-based baseline
+        // before it could ever be compared. Options always write through to the DB.
+        if ( false === $recorded_mtime ) {
+            if ( false === $current_mtime ) {
+                return self::CACHE_NOT_STARTED;
+            }
+
+            update_option( 'rocket_e2e_homepage_cache_mtime', $current_mtime, false );
+            return self::CACHE_NOT_YET_COMPARED;
+        }
+
+        // A baseline exists: this call consumes it, one way or another.
+        delete_option( 'rocket_e2e_homepage_cache_mtime' );
+
+        // The file having vanished entirely is itself proof the cache was cleared.
+        if ( false === $current_mtime ) {
+            return self::CACHE_REGENERATED;
+        }
+
+        return (int) $recorded_mtime === (int) $current_mtime ? self::CACHE_PRESERVED : self::CACHE_REGENERATED;
+    }
+
+    /**
+     * Locate the homepage cache file, http or https variant.
+     *
+     * @return string|false
+     */
+    private function get_homepage_cache_file() {
+        $file_system = rocket_e2e_direct_filesystem();
+        $cache_dir = $this->get_cache_root_dir();
+
+        foreach ( [ 'index.html', 'index-https.html' ] as $filename ) {
+            $path = $cache_dir . '/' . $filename;
+
+            if ( $file_system->exists( $path ) ) {
+                return $path;
+            }
+        }
+
+        return false;
     }
 
     /**
