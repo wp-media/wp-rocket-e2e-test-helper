@@ -10,8 +10,7 @@ class Cache {
     const CACHE_NOT_STARTED = 'not_started';
 
     /**
-     * A baseline was just recorded (or the previous baseline was just consumed by this call);
-     * nothing has been compared against it yet.
+     * A baseline was just recorded; nothing has been compared against it yet.
      */
     const CACHE_NOT_YET_COMPARED = 'not_yet_compared';
 
@@ -26,9 +25,7 @@ class Cache {
     const CACHE_REGENERATED = 'regenerated';
 
     /**
-     * Homepage cache file's mtime as captured at the start of the current request, before
-     * any admin-side hook (e.g. admin_init) has had a chance to clear it. False if no cache
-     * file existed at that point. Null until capture_request_start_snapshot() has run.
+     * Homepage cache file's mtime at the start of the request, before admin_init could clear it; null until captured.
      *
      * @var int|false|null
      */
@@ -159,16 +156,7 @@ class Cache {
     }
 
     /**
-     * Snapshot the homepage cache file's mtime as early in the request as possible.
-     *
-     * Must run on a hook that fires before any admin-side clearing (e.g. 'init', which
-     * always completes before 'admin_init'). Without this, checking the file at render
-     * time (inside the admin page callback) would run *after* the same request's own
-     * admin_init has already had a chance to clear the cache, making it impossible to
-     * ever observe an unmolested "before" state on a site where the bug fires on every
-     * admin request.
-     *
-     * Idempotent: only the first call in a given request actually captures anything.
+     * Snapshot the homepage cache file's mtime on 'init', before admin_init can clear it. Idempotent per request.
      *
      * @return void
      */
@@ -188,17 +176,7 @@ class Cache {
     }
 
     /**
-     * Check whether the homepage cache file was preserved (not regenerated) between two calls.
-     *
-     * A call with no cache file yet returns self::CACHE_NOT_STARTED. A call with no recorded
-     * baseline (or right after the previous baseline was consumed) records the request-start
-     * mtime and returns self::CACHE_NOT_YET_COMPARED, since nothing has been compared yet. The
-     * following call compares that request's start mtime against the recorded baseline, clears
-     * it, and returns self::CACHE_PRESERVED or self::CACHE_REGENERATED.
-     *
-     * Relies on capture_request_start_snapshot() having already run this request (see
-     * Cache\Subscriber, hooked on 'init') so the mtime reflects the state before this
-     * request's own admin_init could have cleared it.
+     * Checks whether the homepage cache file's mtime was preserved between this call and the next one; records a baseline first, compares and clears it second.
      *
      * @return string One of self::CACHE_NOT_STARTED, self::CACHE_NOT_YET_COMPARED, self::CACHE_PRESERVED, self::CACHE_REGENERATED.
      */
@@ -212,23 +190,13 @@ class Cache {
         $current_mtime = self::$request_start_mtime;
         $recorded_mtime = get_option( 'rocket_e2e_homepage_cache_mtime', false );
 
-        // No baseline recorded yet: record one now, if there's a file to measure.
-        //
-        // A plain option is used instead of a transient because WP Rocket's cache-clearing
-        // routine calls wp_cache_flush(), and on sites with a persistent object cache,
-        // transients are stored only in the object cache (never written to wp_options) —
-        // so the very clear we're testing for would silently wipe a transient-based baseline
-        // before it could ever be compared. Options always write through to the DB.
+        // No baseline yet: record one. A plain option (not a transient) is used since wp_cache_flush() would wipe a transient before it could be compared.
         if ( false === $recorded_mtime ) {
             if ( false === $current_mtime ) {
                 return self::CACHE_NOT_STARTED;
             }
 
-            // add_option() relies on the unique index on wp_options.option_name to fail
-            // atomically if a concurrent request already inserted a baseline first, instead
-            // of update_option()'s read-then-write, which would let two concurrent "first
-            // calls" both believe they won and silently overwrite each other's baseline.
-            // Losing that race is harmless here: the other request's baseline is still valid.
+            // add_option() is an atomic insert, so a losing concurrent request can't clobber the winner's baseline.
             add_option( 'rocket_e2e_homepage_cache_mtime', $current_mtime, '', false );
             return self::CACHE_NOT_YET_COMPARED;
         }
