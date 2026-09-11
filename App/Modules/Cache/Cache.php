@@ -224,7 +224,12 @@ class Cache {
                 return self::CACHE_NOT_STARTED;
             }
 
-            update_option( 'rocket_e2e_homepage_cache_mtime', $current_mtime, false );
+            // add_option() relies on the unique index on wp_options.option_name to fail
+            // atomically if a concurrent request already inserted a baseline first, instead
+            // of update_option()'s read-then-write, which would let two concurrent "first
+            // calls" both believe they won and silently overwrite each other's baseline.
+            // Losing that race is harmless here: the other request's baseline is still valid.
+            add_option( 'rocket_e2e_homepage_cache_mtime', $current_mtime, '', false );
             return self::CACHE_NOT_YET_COMPARED;
         }
 

@@ -115,11 +115,16 @@ class Pages {
             ],
         ];
 
+        $cache_preservation_note = $cache_preservation_notes[ $cache_preservation_state ] ?? [
+            'text' => 'Unknown cache preservation state',
+            'type' => 'warning',
+        ];
+
         $this->template->add_test_case(
             'cache',
             'should_not_regenerate_cache_on_admin_refresh',
             'Should not regenerate homepage cache after an admin refresh',
-            $cache_preservation_notes[ $cache_preservation_state ],
+            $cache_preservation_note,
             $cache_preservation_state
         );
     }
