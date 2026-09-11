@@ -36,6 +36,8 @@ class Activation_Deactivation {
         }
         
         update_option( CONFIG['PLUGIN_OPTION'], $existing_config );
+
+        delete_option( 'rocket_e2e_homepage_cache_mtime' );
     }
 
     /**
@@ -45,5 +47,6 @@ class Activation_Deactivation {
      */
     public function deactivate() : void {
         delete_option( CONFIG['PLUGIN_OPTION'] );
+        delete_option( 'rocket_e2e_homepage_cache_mtime' );
     }
 }

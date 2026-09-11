@@ -10,6 +10,23 @@ use WP_Rocket_e2e\Events\Subscriber_Interface;
 class Subscriber implements Subscriber_Interface {
 
     /**
+     * Cache instance.
+     *
+     * @var Cache
+     */
+    private $cache;
+
+    /**
+     * Instantiate class.
+     *
+     * @param Cache $cache Cache instance.
+     * @return void
+     */
+    public function __construct( Cache $cache ) {
+        $this->cache = $cache;
+    }
+
+    /**
      * Returns array of events this listens to.
      *
      * @return array
@@ -23,7 +40,17 @@ class Subscriber implements Subscriber_Interface {
             'transient_wp_rocket_customer_data' => [ 'transient_wp_rocket_customer_data_license_override', 11 ],
             'pre_get_rocket_option_consumer_key' => 'pre_get_rocket_option_consumer_key',
             'pre_get_rocket_option_consumer_email' => 'pre_get_rocket_option_consumer_email',
+            'init' => 'capture_cache_snapshot',
         ];
+    }
+
+    /**
+     * Snapshot the homepage cache file's mtime before any admin-side hook can clear it.
+     *
+     * @return void
+     */
+    public function capture_cache_snapshot() : void {
+        $this->cache->capture_request_start_snapshot();
     }
 
     /**
