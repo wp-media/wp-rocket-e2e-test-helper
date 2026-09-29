@@ -17,7 +17,13 @@ defined( 'ABSPATH' ) || exit;
           <?php endif; ?>
         </div>
         <small class="d-inline-flex px-2 py-1 fw-semibold text-success-emphasis bg-primary-subtle border border-primary-subtle rounded-2" id="<?php echo esc_attr( $test_case_id ) ?>">
-            <?php echo $test_case['result'] ? 'Returned True' : 'Returned False';  ?>
+            <?php
+            if ( is_bool( $test_case['result'] ) ) {
+                echo $test_case['result'] ? 'Returned True' : 'Returned False';
+            } else {
+                echo esc_html( ucwords( str_replace( '_', ' ', (string) $test_case['result'] ) ) );
+            }
+            ?>
         </small>
       </div>
     </div>

@@ -88,6 +88,24 @@ Cache presence is checked against two default test paths:
 
 These paths can be overridden using the `rocket_e2e_cache_test_paths` filter (see [Hooks](#hooks) below).
 
+#### Homepage cache preservation (`should_not_regenerate_cache_on_admin_refresh`)
+
+Unlike the test cases above, `should_not_regenerate_cache_on_admin_refresh` does **not** render a
+`true`/`false` result. It tracks a multi-step state across successive admin page loads by
+comparing the homepage cache file's mtime between requests, so its `#should_not_regenerate_cache_on_admin_refresh`
+element renders one of four fixed strings:
+
+| Rendered text | Meaning |
+|---|---|
+| `Not Started` | No homepage cache file exists yet — nothing to track. |
+| `Not Yet Compared` | A baseline mtime was just recorded on this request; the next admin page load will compare against it. |
+| `Preserved` | The homepage cache file's mtime was unchanged since the baseline — cache was **not** regenerated. |
+| `Regenerated` | The homepage cache file's mtime changed (or the file is gone) since the baseline — cache **was** regenerated. |
+
+Because the check requires two successive admin page loads (one to record the baseline, one to
+compare), a Playwright test must read this element at least twice, reloading the admin page in
+between, before `Preserved`/`Regenerated` can appear.
+
 ---
 
 ### Filter Simulation
@@ -203,6 +221,23 @@ Navigate to the helper plugin admin page and query element IDs that correspond t
 // Example: check cache generation for logged-in users
 const result = await page.locator('#should_generate_cache_files_for_logged-in_users').textContent();
 expect(result).toBe('Returned True');
+```
+
+`should_not_regenerate_cache_on_admin_refresh` reads as one of `Not Started`, `Not Yet Compared`,
+`Preserved`, or `Regenerated` instead — see [Homepage cache preservation](#homepage-cache-preservation-should_not_regenerate_cache_on_admin_refresh):
+
+```js
+// First load: records the baseline mtime.
+await page.goto('/wp-admin/tools.php?page=rocket_e2e_tests_helper');
+let result = await page.locator('#should_not_regenerate_cache_on_admin_refresh').textContent();
+expect(result).toBe('Not Yet Compared');
+
+// ... perform the admin refresh under test here ...
+
+// Second load: compares against the recorded baseline.
+await page.reload();
+result = await page.locator('#should_not_regenerate_cache_on_admin_refresh').textContent();
+expect(result).toBe('Preserved'); // or 'Regenerated' if the bug reproduces
 ```
 
 ### 2. Setting filter simulation values
