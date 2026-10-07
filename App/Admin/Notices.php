@@ -8,7 +8,7 @@ namespace WP_Rocket_e2e\App\Admin;
 class Notices {
 
     private $debug_log_patterns = [
-        '/plugins/wp-rocket/',
+        '/plugins/wp-rocket',
         'wpr_rucss_used_css',
         'wpr_rocket_cache',
     ];
